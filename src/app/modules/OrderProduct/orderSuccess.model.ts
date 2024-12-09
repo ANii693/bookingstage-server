@@ -21,7 +21,7 @@ const orderScema = new Schema<OrderDataType>({
   paymentId: String,
   shipmentStatus: String,
   orderId: String,
-  shipmentStatusArray:{type:[ShipMentStatusScema] ||  undefined}
+
 });
 const cancelOrderScema = new Schema<CanceOrderDataType>({
   buyerEmail: String,

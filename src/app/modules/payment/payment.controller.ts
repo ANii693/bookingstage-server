@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 require("dotenv").config();
 const crypto = require("crypto");
 const Razorpay = require("razorpay");
+import { Order } from "../OrderProduct/orderSuccess.model";
 // const stripe = require("stripe")(process.env.STRIPE_KEY);
 
 // export const CreatePaymentIntent = async (req: Request, res: Response) => {
@@ -28,7 +29,7 @@ export const CreatePaymentIntent = async (req: Request, res: Response) => {
       key_secret: process.env.RAZORPAY_SECRET,
     });
 
-    const options = req.body;
+    const options = req.body.options;
     const order = await razorpay.orders.create(options);
 
     if (!order) {
@@ -36,6 +37,7 @@ export const CreatePaymentIntent = async (req: Request, res: Response) => {
     }
 
     res.json(order);
+
   } catch (err) {
     console.log(err);
     res.status(500).send("Error");
@@ -43,19 +45,52 @@ export const CreatePaymentIntent = async (req: Request, res: Response) => {
 }
 export const PaymentValidation = async (req: Request, res: Response) => {
   const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
-  req.body;
+    req.body.response;
 
-const sha = crypto.createHmac("sha256", process.env.RAZORPAY_SECRET);
-//order_id + "|" + razorpay_payment_id
-sha.update(`${razorpay_order_id}|${razorpay_payment_id}`);
-const digest = sha.digest("hex");
-if (digest !== razorpay_signature) {
-  return res.status(400).json({ msg: "Transaction is not legit!" });
-}
+  const sha = crypto.createHmac("sha256", process.env.RAZORPAY_SECRET);
+  //order_id + "|" + razorpay_payment_id
+  sha.update(`${razorpay_order_id}|${razorpay_payment_id}`);
+  const digest = sha.digest("hex");
+  if (digest !== razorpay_signature) {
+    return res.status(400).json({ msg: "Transaction is not legit!" });
+  }
 
-res.json({
-  msg: "success",
-  orderId: razorpay_order_id,
-  paymentId: razorpay_payment_id,
-});
+    // Extract order details from the request body
+    const {
+      buyerEmail,
+      name,
+      Address,
+      City,
+      Postcode,
+      EmailAddress,
+      Phone,
+      totalPrice,
+      orderProducts,
+    } = req.body.user;
+
+    // Create the order document in MongoDB
+    const newOrder = new Order({
+      buyerEmail,
+      name,
+      Address,
+      City,
+      Postcode,
+      EmailAddress,
+      Phone,
+      totalPrice,
+      orderStatusDate: new Date().toISOString(),
+      shipmentStatus: "Success", // Initial status
+      orderProducts,
+      date: new Date().toISOString(),
+      paymentId: razorpay_payment_id,
+      orderId: razorpay_order_id, 
+    });
+
+    // Save the new order in MongoDB
+    const savedOrder = await newOrder.save();
+  res.json({
+    msg: "success",
+    orderId: razorpay_order_id,
+    paymentId: razorpay_payment_id,
+  });
 }
