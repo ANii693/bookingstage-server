@@ -9,6 +9,7 @@ import paymentSuccess from "./app/modules/OrderProduct/orderSuccess.route";
 import blogRoute from "./app/modules/blog/blog.route";
 import teamRoute from "./app/modules/team/team.route";
 import emailRouter from "./app/modules/email/email.route";
+import dashboardRoute from "./app/modules/dashboard/dashboard.route";
 const app: Application = express();
 
 // cors
@@ -27,5 +28,5 @@ app.use("/success", paymentSuccess);
 app.use("/blog", blogRoute);
 app.use("/team", teamRoute);
 app.use("/email", emailRouter)
-
+app.use("/dashboard", dashboardRoute)
 export default app;

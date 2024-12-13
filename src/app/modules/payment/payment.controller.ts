@@ -3,6 +3,7 @@ require("dotenv").config();
 const crypto = require("crypto");
 const Razorpay = require("razorpay");
 import { Order } from "../OrderProduct/orderSuccess.model";
+import moment from "moment";
 // const stripe = require("stripe")(process.env.STRIPE_KEY);
 
 // export const CreatePaymentIntent = async (req: Request, res: Response) => {
@@ -67,7 +68,7 @@ export const PaymentValidation = async (req: Request, res: Response) => {
       totalPrice,
       orderProducts,
     } = req.body.user;
-
+    const now = moment();
     // Create the order document in MongoDB
     const newOrder = new Order({
       buyerEmail,
@@ -81,7 +82,7 @@ export const PaymentValidation = async (req: Request, res: Response) => {
       orderStatusDate: new Date().toISOString(),
       shipmentStatus: "Success", // Initial status
       orderProducts,
-      date: new Date().toISOString(),
+      date: now.format("MM/DD/YY hh:mm a"),
       paymentId: razorpay_payment_id,
       orderId: razorpay_order_id, 
     });
