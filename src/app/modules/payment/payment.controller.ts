@@ -83,10 +83,8 @@ export const PaymentValidation = async (req: Request, res: Response) => {
 
       // Save the event submission to MongoDB
       await newEventSubmission.save();
-      console.log(newEventSubmission);
     }
   }
-  console.log(savedOrder);
   res.json({
     msg: "success",
     orderId: razorpay_order_id,
