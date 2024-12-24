@@ -1,17 +1,55 @@
-import { model, Schema } from "mongoose";
+import { model, Schema, Document } from "mongoose";
+import { v4 as uuidv4 } from "uuid"; // Importing the uuid package to generate unique IDs
 
-
-interface SubmissionDataType {
-    useremail: string | undefined;
-    video: string | undefined;
-
+// Define the TypeScript interface for your data model
+interface EventSubmissionDataType extends Document {
+  id: string; // Custom id field
+  eventUserId: string;
+  eventname: string
+  eventimg: string
+  userEmail: string;
+  videoPath: string;
+  certificatePath: string;
+  feedbackReportPath: string;
 }
-const SubmissionSchema = new Schema<SubmissionDataType>({
-    useremail: String,
-    video: String,
 
+// Define the Mongoose schema for EventSubmission
+const EventSubmissionSchema = new Schema<EventSubmissionDataType>({
+  id: {
+    type: String,
+    default: uuidv4, // Generate a new UUID by default
+    unique: true, // Ensure that the id is unique
+  },
+  eventUserId: {
+    type: String,
+    required: true,
+    index: true, // Optional: Ensure the eventUserId is indexed
+  },
+  eventimg: {
+    type: String,
+    required: true,
+  },
+  eventname: {
+    type: String,
+    required: true,
+  },
+  userEmail: {
+    type: String,
+    required: true,
+  },
+  videoPath: {
+    type: String,
+    required: false,
+  },
+  certificatePath: {
+    type: String,
+    required: false,
+  },
+  feedbackReportPath: {
+    type: String,
+    required: false,
+  },
 });
 
-
-
-export const Order = model<SubmissionDataType>("Order", SubmissionSchema);
+// Export the model
+export const EventSubmission = model<EventSubmissionDataType>("EventSubmission", EventSubmissionSchema);

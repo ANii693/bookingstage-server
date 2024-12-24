@@ -1,6 +1,6 @@
 
 import express from "express";
-import { EventSubmission } from "./submission.controller";
+import { clientSubmissionInfo, clientSubmissionInfoForOne, EventSubmissionFunc } from "./submission.controller";
 import multer from "multer";
 
 const SubmissionRoute = express.Router();
@@ -8,8 +8,9 @@ const SubmissionRoute = express.Router();
 // PaymentRoute.post("/payment-intent", verifyToken, CreatePaymentIntent);
 const upload = multer({ dest: "uploads/" }); 
 
-SubmissionRoute.post("/event",upload.array('files[0]'), EventSubmission);
-
+SubmissionRoute.post("/event",upload.array('files[0]'), EventSubmissionFunc);
+SubmissionRoute.get("/list", clientSubmissionInfo);
+SubmissionRoute.get("/list/:id", clientSubmissionInfoForOne);
 // SubmissionRoute.post("/order/validate", PaymentValidation);
 
 export default SubmissionRoute;
