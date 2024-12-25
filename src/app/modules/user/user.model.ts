@@ -22,6 +22,10 @@ const userScema = new Schema<IUser>({
         required:true,
         trim: true,
     },
+    evaluator: {
+      type:Boolean,
+      default:false,
+    },
     date: {
         type:String,
         required:true,

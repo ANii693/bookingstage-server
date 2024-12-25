@@ -8,4 +8,5 @@ export interface IUser {
     phone:string;
     photo:string;
     gender:string;
+    evaluator:boolean;
 }
