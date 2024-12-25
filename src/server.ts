@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import app from "./app";
+import multer from "multer";
 const port = process.env.PORT || 5000;
 
 require("dotenv").config();
@@ -16,7 +17,7 @@ const mongooseOptions: any = {
   useUnifiedTopology: true,
   serverSelectionTimeoutMS: 30000, // Set a longer timeout (default is 30000)
 };
-
+const upload = multer({ dest: "uploads/" });
 async function mongodbConnect() {
   try {
     await mongoose.connect(mongoUrl, mongooseOptions);

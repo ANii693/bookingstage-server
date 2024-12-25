@@ -10,6 +10,7 @@ import blogRoute from "./app/modules/blog/blog.route";
 import teamRoute from "./app/modules/team/team.route";
 import emailRouter from "./app/modules/email/email.route";
 import dashboardRoute from "./app/modules/dashboard/dashboard.route";
+import SubmissionRoute from "./app/modules/submission/submission.route";
 const app: Application = express();
 
 // cors
@@ -27,6 +28,10 @@ app.use("/payment", PaymentRoute);
 app.use("/success", paymentSuccess);
 app.use("/blog", blogRoute);
 app.use("/team", teamRoute);
-app.use("/email", emailRouter);
-app.use("/dashboard", dashboardRoute);
+
+
+app.use("/email", emailRouter)
+app.use("/dashboard", dashboardRoute)
+app.use("/submission", SubmissionRoute)
+
 export default app;
