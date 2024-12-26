@@ -1,9 +1,8 @@
-import multer from "multer";
+import crypto from "crypto"; // To encrypt file names
 import fs from "fs";
 import path from "path";
 import { Request, Response } from "express";
-import { EventSubmission } from "./submission.model"; 
-import crypto from "crypto"; // To encrypt file names
+import { EventSubmission } from "./submission.model";
 
 // Function to generate unique encrypted file name
 const generateUniqueFileName = (originalName: string): string => {
@@ -28,7 +27,7 @@ export const EventSubmissionFunc = async (req: Request, res: Response) => {
     }
 
     // Check if event with eventId exists in the database
-    const eventSubmission = await EventSubmission.findOne({ id:eventId });
+    const eventSubmission = await EventSubmission.findOne({ id: eventId });
 
     if (!eventSubmission) {
       console.error(`Event with ID ${eventId} not found`);
@@ -36,7 +35,7 @@ export const EventSubmissionFunc = async (req: Request, res: Response) => {
     }
 
     // Define the base directory for storing files
-    const uploadBaseDir = path.join(__dirname, "..","..", "..", "..", "uploads"); // Base directory for storing videos
+    const uploadBaseDir = path.join(__dirname, "..", "..", "..", "..", "uploads"); // Base directory for storing files
     const eventDir = path.join(uploadBaseDir, eventName); // Directory for the specific event
 
     // Check if directory exists; if not, create it
@@ -46,12 +45,27 @@ export const EventSubmissionFunc = async (req: Request, res: Response) => {
     }
 
     // Move and encrypt file names for each uploaded file
-    files.forEach(async (file) => {
-      const encryptedFileName = generateUniqueFileName(file.originalname); // Get encrypted file name
-      const destPath = path.join(eventDir, encryptedFileName); // Final file path
-      fs.renameSync(file.path, destPath); // Move file to the new destination
+    for (const file of files) {
+      const existingFilePath = path.join(eventDir, file.originalname);
+      const destPath = fs.existsSync(existingFilePath) ? existingFilePath : path.join(eventDir, generateUniqueFileName(file.originalname));
 
+      // If the file exists, remove the existing file
+      if (fs.existsSync(existingFilePath)) {
+        console.log(`Removing existing file: ${existingFilePath}`);
+        fs.unlinkSync(existingFilePath);
+      }
+
+      fs.renameSync(file.path, destPath); // Move file to the new destination
       console.log(`File saved to: ${destPath}`);
+
+      // Check if there was a previously uploaded video and delete it
+      if (eventSubmission.videoPath) {
+        const removeVideoPath = path.join(uploadBaseDir, eventSubmission.videoPath);
+        if (fs.existsSync(removeVideoPath)) {
+          console.log(`Removing old video file: ${removeVideoPath}`);
+          fs.unlinkSync(removeVideoPath); // Remove old video
+        }
+      }
 
       // Update the video path in the database with the relative path
       try {
@@ -66,7 +80,7 @@ export const EventSubmissionFunc = async (req: Request, res: Response) => {
         console.error("Error updating database:", dbError);
         return res.status(500).json({ message: "Failed to update database with video path" });
       }
-    });
+    }
 
     res.status(200).json({ message: "Files uploaded and database updated successfully" });
   } catch (error) {
@@ -87,21 +101,20 @@ export const clientSubmissionInfo = async (req: Request, res: Response) => {
     const products = await EventSubmission.find({ userEmail: email }).sort({ date: -1 });
     res.status(200).send({ message: "success", data: products });
   } catch (e) {
+    console.error("Error fetching client submissions:", e);
     res.status(500).send({ error: "Internal Server Error" });
   }
 };
 
 export const clientSubmissionInfoForOne = async (req: Request, res: Response) => {
   try {
-      const product = await EventSubmission.find({ eventUserId: req.params.id });
+    const product = await EventSubmission.find({ eventUserId: req.params.id });
 
-  
-
-      res.status(200).send({
-        data: product,
-
-      });
-    } catch (e) {
-      res.send({ message: "custom error" });
-    }
+    res.status(200).send({
+      data: product,
+    });
+  } catch (e) {
+    console.error("Error fetching client submission for one:", e);
+    res.status(500).send({ message: "Internal Server Error" });
+  }
 };
