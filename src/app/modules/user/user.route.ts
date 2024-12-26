@@ -11,9 +11,11 @@ import {
   makeUser,
   searchUser,
   updateUserInfo,
+  getAllContestants
 } from "./user.controller";
 import verifyToken from "../../../middleware/userVerify";
 import adminVerify from "../../../middleware/adminVerify";
+
 const UserRouter = express.Router();
 UserRouter.post("/register", createUser);
 UserRouter.post("/login", loginUser);
@@ -27,5 +29,7 @@ UserRouter.put("/make-admin", adminVerify, makeAdmin);
 UserRouter.put("/change-password", verifyToken, changePassword);
 
 UserRouter.delete("/delete-user", adminVerify, deleteUser);
+
+UserRouter.post("/all-contestants", getAllContestants)
 
 export default UserRouter;

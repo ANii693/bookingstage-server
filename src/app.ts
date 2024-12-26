@@ -28,7 +28,10 @@ app.use("/payment", PaymentRoute);
 app.use("/success", paymentSuccess);
 app.use("/blog", blogRoute);
 app.use("/team", teamRoute);
+
+
 app.use("/email", emailRouter)
 app.use("/dashboard", dashboardRoute)
 app.use("/submission", SubmissionRoute)
+
 export default app;

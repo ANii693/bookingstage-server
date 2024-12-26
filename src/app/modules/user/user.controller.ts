@@ -251,3 +251,49 @@ export const changePassword = async (req: Request, res: Response) => {
     res.status(500).send({ message: 'Internal Server Error' });
   }
 };
+
+
+import { Order } from "../OrderProduct/orderSuccess.model";
+
+export const getAllContestants = async (req: Request, res: Response) => {
+  try {
+    const { productName } = req.body;
+
+    if (!productName) {
+      return res.status(400).json({
+        success: false,
+        message: "Product name is required"
+      });
+    }
+
+    // Find all orders that have the specified product name in their orderProducts array
+    const orders = await Order.find({
+      'orderProducts': {
+        $elemMatch: {
+          'productName': productName
+        }
+      }
+    });
+
+    // Extract relevant contestant information
+    const contestants = orders.map(order => ({
+      buyerEmail: order.buyerEmail,
+      name: order.name,
+      orderId: order.orderId
+    }));
+
+    return res.status(200).json({
+      success: true,
+      contestants,
+      total: contestants.length
+    });
+
+  } catch (error) {
+    console.error('Error fetching contestants:', error);
+    return res.status(500).json({
+      success: false,
+      message: "Error fetching contestants",
+      error: error instanceof Error ? error.message : "Unknown error occurred"
+    });
+  }
+};
