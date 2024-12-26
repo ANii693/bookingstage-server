@@ -254,6 +254,7 @@ export const changePassword = async (req: Request, res: Response) => {
 
 
 import { Order } from "../OrderProduct/orderSuccess.model";
+import { EventSubmission } from "../submission/submission.model";
 
 export const getAllContestants = async (req: Request, res: Response) => {
   try {
@@ -267,20 +268,16 @@ export const getAllContestants = async (req: Request, res: Response) => {
     }
 
     // Find all orders that have the specified product name in their orderProducts array
-    const orders = await Order.find({
-      'orderProducts': {
-        $elemMatch: {
-          'productName': productName
-        }
-      }
-    });
+    const contestants = await EventSubmission.find({
+      eventname: productName
+    }).exec();
 
     // Extract relevant contestant information
-    const contestants = orders.map(order => ({
-      buyerEmail: order.buyerEmail,
-      name: order.name,
-      orderId: order.orderId
-    }));
+    // const contestants = orders.map(order => ({
+    //   buyerEmail: order.buyerEmail,
+    //   name: order.name,
+    //   orderId: order.orderId
+    // }));
 
     return res.status(200).json({
       success: true,
