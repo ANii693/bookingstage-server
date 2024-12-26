@@ -36,7 +36,7 @@ export const EventSubmissionFunc = async (req: Request, res: Response) => {
     }
 
     // Define the base directory for storing files
-    const uploadBaseDir = path.join(__dirname, "..", "..", "..", "uploads"); // Base directory for storing videos
+    const uploadBaseDir = path.join(__dirname, "..","..", "..", "..", "uploads"); // Base directory for storing videos
     const eventDir = path.join(uploadBaseDir, eventName); // Directory for the specific event
 
     // Check if directory exists; if not, create it
