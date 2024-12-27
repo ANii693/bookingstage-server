@@ -9,6 +9,8 @@ interface EventSubmissionDataType extends Document {
   eventimg: string
   userEmail: string;
   videoPath: string;
+  videoUrl: string;
+  videoThumbnail: string;
   certificatePath: string;
   feedbackReportPath: string;
 }
@@ -40,6 +42,14 @@ const EventSubmissionSchema = new Schema<EventSubmissionDataType>({
   videoPath: {
     type: String,
     required: false,
+  },
+  videoUrl: {
+    type: String,
+    required: false,  // https://www.youtube.com/watch?v=RieKWodQgVQ  after watch?v=    <videoid>
+  },
+  videoThumbnail: {
+    type: String,
+    required: false,  //  https://img.youtube.com/vi/RieKWodQgVQ/hqdefault.jpg   /vi/<videoid>/hqdefault.jpg
   },
   certificatePath: {
     type: String,
