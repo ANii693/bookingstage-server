@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.changePassword = exports.searchUser = exports.makeAdmin = exports.makeUser = exports.deleteUser = exports.getUserInfo = exports.updateUserInfo = exports.getRecentUsers = exports.getLoginUser = exports.loginUser = exports.createUser = void 0;
+exports.getAllContestants = exports.changePassword = exports.searchUser = exports.makeAdmin = exports.makeUser = exports.deleteUser = exports.getUserInfo = exports.updateUserInfo = exports.getRecentUsers = exports.getLoginUser = exports.loginUser = exports.createUser = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const user_model_1 = require("./user.model");
@@ -245,3 +245,39 @@ const changePassword = (req, res) => __awaiter(void 0, void 0, void 0, function*
     }
 });
 exports.changePassword = changePassword;
+const submission_model_1 = require("../submission/submission.model");
+const getAllContestants = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { productName } = req.body;
+        if (!productName) {
+            return res.status(400).json({
+                success: false,
+                message: "Product name is required"
+            });
+        }
+        // Find all orders that have the specified product name in their orderProducts array
+        const contestants = yield submission_model_1.EventSubmission.find({
+            eventname: productName
+        }).exec();
+        // Extract relevant contestant information
+        // const contestants = orders.map(order => ({
+        //   buyerEmail: order.buyerEmail,
+        //   name: order.name,
+        //   orderId: order.orderId
+        // }));
+        return res.status(200).json({
+            success: true,
+            contestants,
+            total: contestants.length
+        });
+    }
+    catch (error) {
+        console.error('Error fetching contestants:', error);
+        return res.status(500).json({
+            success: false,
+            message: "Error fetching contestants",
+            error: error instanceof Error ? error.message : "Unknown error occurred"
+        });
+    }
+});
+exports.getAllContestants = getAllContestants;

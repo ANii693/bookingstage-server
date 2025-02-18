@@ -19,4 +19,5 @@ UserRouter.put("/make-user", adminVerify_1.default, user_controller_1.makeUser);
 UserRouter.put("/make-admin", adminVerify_1.default, user_controller_1.makeAdmin);
 UserRouter.put("/change-password", userVerify_1.default, user_controller_1.changePassword);
 UserRouter.delete("/delete-user", adminVerify_1.default, user_controller_1.deleteUser);
+UserRouter.post("/all-contestants", user_controller_1.getAllContestants);
 exports.default = UserRouter;

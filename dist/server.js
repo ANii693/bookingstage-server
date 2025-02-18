@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importDefault(require("mongoose"));
 const app_1 = __importDefault(require("./app"));
+const multer_1 = __importDefault(require("multer"));
 const port = process.env.PORT || 5000;
 require("dotenv").config();
 // conncet with mongodb atlas
@@ -26,6 +27,7 @@ const mongooseOptions = {
     useUnifiedTopology: true,
     serverSelectionTimeoutMS: 30000, // Set a longer timeout (default is 30000)
 };
+const upload = (0, multer_1.default)({ dest: "uploads/" });
 function mongodbConnect() {
     return __awaiter(this, void 0, void 0, function* () {
         try {

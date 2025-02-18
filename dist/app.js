@@ -14,6 +14,8 @@ const orderSuccess_route_1 = __importDefault(require("./app/modules/OrderProduct
 const blog_route_1 = __importDefault(require("./app/modules/blog/blog.route"));
 const team_route_1 = __importDefault(require("./app/modules/team/team.route"));
 const email_route_1 = __importDefault(require("./app/modules/email/email.route"));
+const dashboard_route_1 = __importDefault(require("./app/modules/dashboard/dashboard.route"));
+const submission_route_1 = __importDefault(require("./app/modules/submission/submission.route"));
 const app = (0, express_1.default)();
 // cors
 app.use((0, cors_1.default)());
@@ -30,4 +32,6 @@ app.use("/success", orderSuccess_route_1.default);
 app.use("/blog", blog_route_1.default);
 app.use("/team", team_route_1.default);
 app.use("/email", email_route_1.default);
+app.use("/dashboard", dashboard_route_1.default);
+app.use("/submission", submission_route_1.default);
 exports.default = app;

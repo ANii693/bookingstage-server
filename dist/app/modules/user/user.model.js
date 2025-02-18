@@ -23,6 +23,10 @@ const userScema = new mongoose_1.Schema({
         required: true,
         trim: true,
     },
+    evaluator: {
+        type: Boolean,
+        default: false,
+    },
     date: {
         type: String,
         required: true,

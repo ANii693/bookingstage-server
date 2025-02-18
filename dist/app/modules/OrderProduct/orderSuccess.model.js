@@ -21,7 +21,6 @@ const orderScema = new mongoose_1.Schema({
     paymentId: String,
     shipmentStatus: String,
     orderId: String,
-    shipmentStatusArray: { type: [ShipMentStatusScema] || undefined }
 });
 const cancelOrderScema = new mongoose_1.Schema({
     buyerEmail: String,
